@@ -1,52 +1,48 @@
 # Mutli Delegate
 
-This framework fire event to multipe classes that are added in multi delegate.  
+**Muilt Delegate** is based on delegate pattern but the difference is Multi Delegate is used for one to many communication where as delegate pattern is used for one to one communication. Whenever you have a scenario where multiple delegate objects are interested to listen events from same source then you can opt to use this Multi Delegate pattern.
+
+## Requirements
+
+- iOS 13.0+ 
+- Xcode 11.0+
+- Swift 5+
+
+## Features
+
+- [x] One to Many Communication
+- [x] Support Generic Protocol
 
 ## Usage
 
 1. Import the module
-   import MulticastDelegateSwift
-  
-2. Add to your class: 
 
-     let multicastDelegate = MultiDelegate<MyProtocol>()
-     
-3.  Other classes must add as a delegate: multicastDelegate.addDelegate(self)
+```swift
+import MulticastDelegateSwift
+```
 
-     When you need to notify your delegates: multicastDelegate.invoke { delegate in delegate.done() }
+2. Create Your DelegateProtocol
 
-
- ## Example
-
-protocol MessageDelegate {
-
-func sendMessage(msg: String)
-func recieveMessage(msg: String)
-
+```swift
+protocol DelegateProtocol {
+    func done()
 }
+```
 
-class Message: MessageDelegate {
+3. Instantiate MultiDelegate with your Delegate Protocol
 
-func sendMessage(msg: String) {
-print(msg)
-}
-func recievedMessage() {
-print(msg)
-}
-}
+```swift
+let multicastDelegate = MultiDelegate<DelegateProtocol>()
+```
 
-class MessageHandler {
+4. Register your delegate to recieve delegate events
 
- var messageDelegate = MultiDelegate<MessageDelegate>.init()
- 
- override func viewDidLoad() {
-     super.viewDidLoad()
-     let messager = Message.init()
-     messageDelegate.add(messager)
-     messageDelegate.invoke {
-     delegate in
-     delegate.didReceivedMessage(message: "Hi whatsapp")
- }
-  
-}
+```swift
+multicastDelegate.add(delegate: self)
+```
 
+5. Fire delegate event and notify all the delegates.
+
+```swift
+   multicastDelegate.invoke { delegate in delegate.done() }
+```
