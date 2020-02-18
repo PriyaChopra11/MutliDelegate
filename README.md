@@ -1,51 +1,52 @@
-# Bit-Movin Event Bus
+# Mutli Delegate
 
-**BMEventBus** is a coco framework which provides an publish/subscribe event flow. User can use this library to achieve publish/subscribe event flow with minimum lines of code.
+This framework fire event to multipe classes that are added in multi delegate.  
 
-## Features
-- Thread Safe
-- Duplicacy of subscribers not allowed
-- Priorities can be assigned to important subscribers.
-- Custom data can be sent with every Event.
-- Subscribers can be un-registered.
-- Tested Via Unit Testing.
+## Usage
+
+1. Import the module
+   import MulticastDelegateSwift
+  
+2. Add to your class: 
+
+     let multicastDelegate = MultiDelegate<MyProtocol>()
+     
+3.  Other classes must add as a delegate: multicastDelegate.addDelegate(self)
+
+     When you need to notify your delegates: multicastDelegate.invoke { delegate in delegate.done() }
 
 
-## Subscriber
+ ## Example
 
-A `subscriber` can simply conforms the `BMMessageSubscriber` Protocol and implement it's requirements. User can provide the list events that it is interested in through `eventsToSubscribe` variable. 
+protocol MessageDelegate {
 
-Subscriber also must implement  `didReceiveEvent` whenever any publish will publish the event you are interested  in you will be notfied via this method.
+func sendMessage(msg: String)
+func recieveMessage(msg: String)
 
-## Event Bus
+}
 
-User can use the  `BMEventBus` in 2 ways :-
+class Message: MessageDelegate {
 
-1. By using the shared instance of `BMCommunicationBus` -> `BMEventBusManager.shared`
-2. By creating a new instance of the event bus using ` BMEventBusManager.getNewEventBus(with queueName: String)`  method.
+func sendMessage(msg: String) {
+print(msg)
+}
+func recievedMessage() {
+print(msg)
+}
+}
 
-### Register Subscriber
+class MessageHandler {
 
-User can register subscriber by calling `add` function on `BMEventBus`. User can pass subscriber object and priority as arguments. Subscriber with high priority will be notified first when an event is fired. Default priority is high.
-Usage shown below :-
+ var messageDelegate = MultiDelegate<MessageDelegate>.init()
+ 
+ override func viewDidLoad() {
+     super.viewDidLoad()
+     let messager = Message.init()
+     messageDelegate.add(messager)
+     messageDelegate.invoke {
+     delegate in
+     delegate.didReceivedMessage(message: "Hi whatsapp")
+ }
+  
+}
 
-```swift
-
-add(subscriber: self, with priority: .high)
-
-```
-
-### UnRegister Subscriber
-
-When a subscriber is no longer interested in listening events It can be removed as a listener from event bus by calling `remove`
-function as shown below.
-
-```swift
-
-remove(subscriber: self) 
-
-```
-### DidReceiveEvent
-
-When an event is published subscriber is notified via `didReceiveEvent(for event: String, with data: [String: Any]?)`.
-In this function you will get the event for which the function has been fired and custom data corresponding to the event.
