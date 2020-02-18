@@ -44,5 +44,5 @@ multicastDelegate.add(delegate: self)
 5. Fire delegate event and notify all the delegates.
 
 ```swift
-   multicastDelegate.invoke { delegate in delegate.done() }
+multicastDelegate.invoke { delegate in delegate.done() }
 ```
